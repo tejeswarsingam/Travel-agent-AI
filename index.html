@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base target="_self">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelGuideAI - Smart Travel Planning Platform</title>
+    <meta name="description" content="Adaptable travel planning platform for travelers, agencies, and bloggers with AI-powered itinerary generation">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        },
+                        accent: {
+                            50: '#fefce8',
+                            100: '#fef9c3',
+                            200: '#fef08a',
+                            300: '#fde047',
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                            700: '#a16207',
+                            800: '#854d0e',
+                            900: '#713f12',
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'heading': ['Poppins', 'Inter', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gray-50 font-sans text-gray-800">
+    <!-- Global Navigation -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <nav class="flex items-center justify-between py-4">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-plane-departure text-white text-xl"></i>
+                    </div>
+                    <h1 class="text-2xl font-heading font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+                        TravelGuide<span class="font-bold">AI</span>
+                    </h1>
+                </div>
+
+                <!-- Navigation Items -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <button onclick="handleNavigation('dashboard')" class="nav-item flex items-center space-x-2 hover:text-primary-600 transition-colors">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard Home</span>
+                    </button>
+                    
+                    <!-- Mode Switcher -->
+                    <div class="relative group">
+                        <button class="nav-item flex items-center space-x-2 hover:text-primary-600 transition-colors">
+                            <i class="fas fa-exchange-alt"></i>
+                            <span>Mode Switcher</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                            <button onclick="switchMode('traveler')" class="w-full px-4 py-3 text-left hover:bg-primary-50 flex items-center space-x-3">
+                                <i class="fas fa-user text-primary-500"></i>
+                                <div>
+                                    <div class="font-medium">Traveler</div>
+                                    <div class="text-xs text-gray-500">Individual planning</div>
+                                </div>
+                            </button>
+                            <button onclick="switchMode('agency')" class="w-full px-4 py-3 text-left hover:bg-primary-50 flex items-center space-x-3">
+                                <i class="fas fa-briefcase text-secondary-500"></i>
+                                <div>
+                                    <div class="font-medium">Agency</div>
+                                    <div class="text-xs text-gray-500">Professional tools</div>
+                                </div>
+                            </button>
+                            <button onclick="switchMode('blogger')" class="w-full px-4 py-3 text-left hover:bg-primary-50 flex items-center space-x-3">
+                                <i class="fas fa-pen-nib text-accent-500"></i>
+                                <div>
+                                    <div class="font-medium">Blogger</div>
+                                    <div class="text-xs text-gray-500">Content creation</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button onclick="handleNavigation('trips')" class="nav-item flex items-center space-x-2 hover:text-primary-600 transition-colors">
+                        <i class="fas fa-suitcase-rolling"></i>
+                        <span>My Trips / Projects</span>
+                    </button>
+                    
+                    <button onclick="handleNavigation('profile')" class="nav-item flex items-center space-x-2 hover:text-primary-600 transition-colors">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Profile & Settings</span>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden text-gray-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="md:hidden hidden bg-white border-t border-gray-100 px-4 py-4">
+            <div class="space-y-4">
+                <button onclick="handleNavigation('dashboard')" class="w-full flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-home text-primary-500"></i>
+                    <span>Dashboard Home</span>
+                </button>
+                <button onclick="handleNavigation('trips')" class="w-full flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-suitcase-rolling text-primary-500"></i>
+                    <span>My Trips / Projects</span>
+                </button>
+                <button onclick="handleNavigation('profile')" class="w-full flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg">
+                    <i class="fas fa-user-cog text-primary-500"></i>
+                    <span>Profile & Settings</span>
+                </button>
+                <div class="pt-3 border-t border-gray-100">
+                    <div class="font-medium text-gray-700 mb-2">Switch Mode</div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="switchMode('traveler')" class="p-3 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors">
+                            <i class="fas fa-user text-primary-600 mb-2"></i>
+                            <div class="text-sm font-medium">Traveler</div>
+                        </button>
+                        <button onclick="switchMode('agency')" class="p-3 bg-secondary-50 rounded-lg hover:bg-secondary-100 transition-colors">
+                            <i class="fas fa-briefcase text-secondary-600 mb-2"></i>
+                            <div class="text-sm font-medium">Agency</div>
+                        </button>
+                        <button onclick="switchMode('blogger')" class="p-3 bg-accent-50 rounded-lg hover:bg-accent-100 transition-colors">
+                            <i class="fas fa-pen-nib text-accent-600 mb-2"></i>
+                            <div class="text-sm font-medium">Blogger</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- Mode Indicator -->
+        <div class="mb-8">
+            <div class="inline-flex items-center px-4 py-2 rounded-full bg-primary-50 border border-primary-200">
+                <div id="modeIndicator" class="flex items-center space-x-2">
+                    <i class="fas fa-user text-primary-600"></i>
+                    <span class="font-medium text-primary-700">Traveler Mode</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Input Components -->
+            <div class="lg:col-span-1 space-y-8">
+                <!-- Interactive Trip Builder -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-heading font-bold text-gray-800">Trip Builder</h2>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+                            <span class="text-sm text-gray-600">AI Ready</span>
+                        </div>
+                    </div>
+
+                    <!-- Destination Input -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-map-marker-alt mr-2 text-primary-500"></i>
+                            Destination
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                id="destinationInput"
+                                placeholder="Search for a city, country, or landmark..."
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                            >
+                            <i class="fas fa-search absolute right-3 top-3.5 text-gray-400"></i>
+                        </div>
+                        <div id="autocompleteResults" class="hidden mt-2 bg-white border border-gray-200 rounded-lg shadow-lg absolute z-10 w-full max-w-md"></div>
+                    </div>
+
+                    <!-- Date Range Picker -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="far fa-calendar-alt mr-2 text-primary-500"></i>
+                            Date Range
+                        </label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <input 
+                                    type="date" 
+                                    id="startDate"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                >
+                                <div class="text-xs text-gray-500 mt-1">Start Date</div>
+                            </div>
+                            <div>
+                                <input 
+                                    type="date" 
+                                    id="endDate"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                >
+                                <div class="text-xs text-gray-500 mt-1">End Date</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interest Tags -->
+                    <div class="mb-8">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">
+                            <i class="fas fa-tags mr-2 text-primary-500"></i>
+                            Select Your Interests
+                        </label>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="toggleInterest('foodie')" class="interest-tag bg-primary-50 text-primary-700 border border-primary-200 hover:bg-primary-100">
+                                <i class="fas fa-utensils mr-2"></i>
+                                #Foodie
+                            </button>
+                            <button onclick="toggleInterest('adventure')" class="interest-tag bg-green-50 text-green-700 border border-green-200 hover:bg-green-100">
+                                <i class="fas fa-hiking mr-2"></i>
+                                #Adventure
+                            </button>
+                            <button onclick="toggleInterest('budget')" class="interest-tag bg-yellow-50 text-yellow-700 border border-yellow-200 hover:bg-yellow-100">
+                                <i class="fas fa-wallet mr-2"></i>
+                                #Budget
+                            </button>
+                            <button onclick="toggleInterest('family')" class="interest-tag bg-pink-50 text-pink-700 border border-pink-200 hover:bg-pink-100">
+                                <i class="fas fa-child mr-2"></i>
+                                #KidFriendly
+                            </button>
+                            <button onclick="toggleInterest('luxury')" class="interest-tag bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100">
+                                <i class="fas fa-gem mr-2"></i>
+                                #Luxury
+                            </button>
+                            <button onclick="toggleInterest('culture')" class="interest-tag bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100">
+                                <i class="fas fa-landmark mr-2"></i>
+                                #Culture
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Magic Generate Button -->
+                    <button onclick="generateItinerary()" class="magic-generate-btn w-full py-4 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-xl font-semibold text-lg hover:from-primary-700 hover:to-secondary-700 transform hover:-translate-y-1 transition-all duration-300 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-wand-magic-sparkles mr-3 animate-pulse-slow"></i>
+                        Magic Generate Itinerary
+                    </button>
+                </div>
+
+                <!-- AI Prompt Bar -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-lg font-heading font-bold text-gray-800 mb-4">
+                        <i class="fas fa-robot mr-2 text-secondary-500"></i>
+                        AI Refinement
+                    </h3>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="aiPrompt"
+                            placeholder="Ask AI to refine your plan (e.g., Make Day 3 more relaxing)..."
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-500 focus:border-transparent pr-12"
+                        >
+                        <button onclick="sendAIPrompt()" class="absolute right-3 top-3 bg-secondary-500 text-white p-2 rounded-lg hover:bg-secondary-600 transition-colors">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Column: Main Content (Dynamic based on mode) -->
+            <div class="lg:col-span-2">
+                <!-- Traveler Mode Content -->
+                <div id="travelerContent" class="space-y-6">
+                    <!-- Trip Builder Canvas Header -->
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h2 class="text-2xl font-heading font-bold text-gray-800">Paris, France Itinerary</h2>
+                                <p class="text-gray-600">April 15-22, 2024 • 7 Days • Food & Culture Focus</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <button onclick="toggleMapView()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center space-x-2">
+                                    <i class="fas fa-map-marked-alt"></i>
+                                    <span>View on Map</span>
+                                </button>
+                                <button onclick="saveItinerary()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 flex items-center space-x-2">
+                                    <i class="far fa-save"></i>
+                                    <span>Save & Sync</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Timeline Wrapper -->
+                        <div id="timelineWrapper" class="space-y-6">
+                            <!-- Day 1 -->
+                            <div class="timeline-day">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-10 h-10 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold mr-3">
+                                        1
+                                    </div>
+                                    <h3 class="text-lg font-bold text-gray-800">Day 1: Arrival & Eiffel Tower</h3>
+                                    <button onclick="addActivity(1)" class="ml-auto text-sm text-primary-600 hover:text-primary-800 flex items-center">
+                                        <i class="fas fa-plus mr-1"></i>
+                                        Add Activity
+                                    </button>
+                                </div>
+                                <div class="activity-card" draggable="true" onDragStart="dragStart(event)" onDragEnd="dragEnd(event)">
+                                    <div class="flex items-start">
+                                        <div class="drag-handle cursor-move p-3 text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-grip-vertical"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-start justify-between mb-2">
+                                                <div>
+                                                    <div class="font-semibold text-gray-800">Eiffel Tower Visit</div>
+                                                    <div class="text-sm text-gray-600">10:00 AM • 2 hours • €25</div>
+                                                </div>
+                                                <button onclick="regenerateActivity(1)" class="text-gray-400 hover:text-primary-600 transition-colors">
+                                                    <i class="fas fa-sync-alt"></i>
+                                                </button>
+                                            </div>
+                                            <p class="text-gray-700 mb-3">Experience breathtaking views of Paris from the iconic Eiffel Tower.</p>
+                                            <img src="https://picsum.photos/600/200?random=10" alt="Eiffel Tower view" class="w-full h-48 object-cover rounded-lg mb-3">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Day 2 -->
+                            <div class="timeline-day">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-10 h-10 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold mr-3">
+                                        2
+                                    </div>
+                                    <h3 class="text-lg font-bold text-gray-800">Day 2: Louvre & Seine Cruise</h3>
+                                </div>
+                                <div class="activity-card" draggable="true" onDragStart="dragStart(event)" onDragEnd="dragEnd(event)">
+                                    <div class="flex items-start">
+                                        <div class="drag-handle cursor-move p-3 text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-grip-vertical"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-start justify-between mb-2">
+                                                <div>
+                                                    <div class="font-semibold text-gray-800">Louvre Museum Tour</div>
+                                                    <div class="text-sm text-gray-600">9:00 AM • 3 hours • €17</div>
+                                                </div>
+                                                <button onclick="regenerateActivity(2)" class="text-gray-400 hover:text-primary-600 transition-colors">
+                                                    <i class="fas fa-sync-alt"></i>
+                                                </button>
+                                            </div>
+                                            <p class="text-gray-700 mb-3">Discover masterpieces including the Mona Lisa and Venus de Milo.</p>
+                                            <img src="https://picsum.photos/600/200?random=11" alt="Louvre Museum" class="w-full h-48 object-cover rounded-lg mb-3">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agency Mode Content -->
+                <div id="agencyContent" class="hidden space-y-6">
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-heading font-bold text-gray-800">Agency Dashboard</h2>
+                            <div class="flex space-x-3">
+                                <button onclick="showNewClientModal()" class="px-4 py-2 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 flex items-center space-x-2">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>New Client Lead</span>
+                                </button>
+                                <button onclick="importClientData()" class="px-4 py-2 border border-secondary-500 text-secondary-600 rounded-lg hover:bg-secondary-50 flex items-center space-x-2">
+                                    <i class="fas fa-file-import"></i>
+                                    <span>Import Preferences</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Client Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-700">Client</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-700">Destination</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-700">Status</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-700">Last Updated</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-700">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                        <td class="py-3 px-4">
+                                            <div class="flex items-center">
+                                                <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center mr-3">
+                                                    <i class="fas fa-user text-primary-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium">John Smith</div>
+                                                    <div class="text-sm text-gray-500">Family of 4</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-map-marker-alt text-red-500 mr-2"></i>
+                                            <span>Bali, Indonesia</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <span class="status-badge bg-blue-100 text-blue-800">Drafting</span>
+                                        </td>
+                                        <td class="py-3 px-4 text-sm text-gray-600">2 hours ago</td>
+                                        <td class="py-3 px-4">
+                                            <div class="flex space-x-2">
+                                                <button class="p-2 text-gray-600 hover:text-primary-600">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="p-2 text-gray-600 hover:text-secondary-600">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="p-2 text-gray-600 hover:text-green-600">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                        <td class="py-3 px-4">
+                                            <div class="flex items-center">
+                                                <div class="w-8 h-8 bg-secondary-100 rounded-full flex items-center justify-center mr-3">
+                                                    <i class="fas fa-user text-secondary-600"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium">Sarah Johnson</div>
+                                                    <div class="text-sm text-gray-500">Honeymoon</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-map-marker-alt text-red-500 mr-2"></i>
+                                            <span>Paris, France</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-3 px-4">
+                                            <span class="status-badge bg-green-100 text-green-800">Sent to Client</span>
+                                        </td>
+                                        <td class="py-3 px-4 text-sm text-gray-600">1 day ago</td>
+                                        <td class="py-3 px-4">
+                                            <div class="flex space-x-2">
+                                                <button class="p-2 text-gray-600 hover:text-primary-600">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="p-2 text-gray-600 hover:text-secondary-600">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="p-2 text-gray-600 hover:text-green-600">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Professional Output Tools -->
+                        <div class="mt-8 pt-6 border-t border-gray-200">
+                            <h3 class="text-lg font-medium text-gray-800 mb-4">Professional Output</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <button onclick="toggleWhiteLabel()" class="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 flex flex-col items-center">
+                                    <i class="fas fa-building text-secondary-600 text-2xl mb-2"></i>
+                                    <span class="text-sm font-medium">White-Label Preview</span>
+                                </button>
+                                <button onclick="exportAsPDF()" class="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 flex flex-col items-center">
+                                    <i class="fas fa-file-pdf text-red-600 text-2xl mb-2"></i>
+                                    <span class="text-sm font-medium">Export as PDF</span>
+                                </button>
+                                <button onclick="generateQuote()" class="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 flex flex-col items-center">
+                                    <i class="fas fa-calculator text-green-600 text-2xl mb-2"></i>
+                                    <span class="text-sm font-medium">Generate Quote</span>
+                                </button>
+                                <button onclick="generateShareableLink()" class="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 flex flex-col items-center">
+                                    <i class="fas fa-link text-blue-600 text-2xl mb-2"></i>
+                                    <span class="text-sm font-medium">Shareable Link</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blogger Mode Content -->
+                <div id="bloggerContent" class="hidden space-y-6">
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-heading font-bold text-gray-800">Content Editor</h2>
+                            <div class="flex space-x-3">
+                                <button onclick="toggleSEOAnalytics()" class="px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 flex items-center space-x-2">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>SEO Optimizer</span>
+                                </button>
+                                <button onclick="connectCMS()" class="px-4 py-2 border border-accent-500 text-accent-600 rounded-lg hover:bg-accent-50 flex items-center space-x-2">
+                                    <i class="fas fa-plug"></i>
+                                    <span>Connect CMS</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Content Tools -->
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium text-gray-800">Travel Blog Post</h3>
+                                <div class="flex items-center space-x-2">
+                                    <select id="toneSelector" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-500 focus:border-transparent">
+                                        <option value="informative">Informative</option>
+                                        <option value="witty">Witty & Funny</option>
+                                        <option value="luxury">Luxury & Elegant</option>
+                                        <option value="adventurous">Adventurous</option>
+                                    </select>
+                                    <button onclick="applyTone()" class="px-3 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600">
+                                        Apply Tone
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Editor -->
+                            <div class="border border-gray-300 rounded-lg p-4 min-h-[400px] focus:ring-2 focus:ring-accent-500 focus:border-transparent" contenteditable="true">
+                                <h2 class="text-2xl font-bold mb-4">Discovering the Magic of Paris: A 7-Day Food & Culture Journey</h2>
+                                <p class="mb-4">Paris, the City of Light, offers an unforgettable blend of history, art, and culinary excellence. My recent 7-day adventure through this magnificent city revealed hidden gems and iconic landmarks that every traveler should experience.</p>
+                                <p class="mb-4">From the moment you first glimpse the Eiffel Tower sparkling at night to wandering through the charming streets of Montmartre, Paris captivates the soul with its timeless elegance and vibrant energy.</p>
+                                <img src="https://picsum.photos/600/300?random=12" alt="Paris streets" class="w-full h-64 object-cover rounded-lg my-4">
+                                <p class="mb-4">The culinary scene is nothing short of spectacular. From buttery croissants at local patisseries to exquisite dinners in Michelin-starred restaurants, every meal becomes a cherished memory.</p>
+                            </div>
+                        </div>
+
+                        <!-- Media Tools -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <button onclick="generateImage()" class="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 flex flex-col items-center">
+                                <i class="fas fa-image text-purple-600 text-2xl mb-2"></i>
+                                <span class="text-sm font-medium">Auto-Generate Images</span>
+                                <span class="text-xs text-gray-500 mt-1">DALL-E / Midjourney</span>
+                            </button>
+                            <button onclick="insertMapWidget()" class="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 flex flex-col items-center">
+                                <i class="fas fa-map-marked-alt text-blue-600 text-2xl mb-2"></i>
+                                <span class="text-sm font-medium">Insert Map Widget</span>
+                                <span class="text-xs text-gray-500 mt-1">Interactive Map</span>
+                            </button>
+                            <button onclick="previewPost()" class="p-4 border border-gray-300 rounded-lg hover:bg-gray-50 flex flex-col items-center">
+                                <i class="fas fa-eye text-green-600 text-2xl mb-2"></i>
+                                <span class="text-sm font-medium">Draft Preview</span>
+                                <span class="text-xs text-gray-500 mt-1">Mobile/Desktop</span>
+                            </button>
+                        </div>
+
+                        <!-- Publish Section -->
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-medium text-gray-800 mb-2">Ready to Publish</h3>
+                                    <p class="text-sm text-gray-600">SEO Score: 85/100 • Reading Time: 4 minutes</p>
+                                </div>
+                                <button onclick="publishToWeb()" class="px-6 py-3 bg-gradient-to-r from-accent-500 to-purple-500 text-white rounded-lg font-semibold hover:from-accent-600 hover:to-purple-600 transition-all flex items-center space-x-2">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Publish to Web</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-12">
+        <div class="container mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-plane-departure text-white text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-heading font-bold">TravelGuide<span class="font-bold">AI</span></h2>
+                    </div>
+                    <p class="text-gray-400">AI-powered travel planning for everyone. Perfect itineraries in minutes.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Modes</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" onclick="switchMode('traveler')" class="text-gray-400 hover:text-white transition-colors">Traveler</a></li>
+                        <li><a href="#" onclick="switchMode('agency')" class="text-gray-400 hover:text-white transition-colors">Agency</a></li>
+                        <li><a href="#" onclick="switchMode('blogger')" class="text-gray-400 hover:text-white transition-colors">Blogger</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">API Reference</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Connect</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2024 TravelGuideAI. All rights reserved. Built with AI and ❤️ for travelers worldwide.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cookie Consent -->
+    <div id="cookieConsent" class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
+            <p class="mb-4 md:mb-0">We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.</p>
+            <div class="flex space-x-3">
+                <button onclick="acceptCookies()" class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
+                    Accept All
+                </button>
+                <button onclick="declineCookies()" class="px-4 py-2 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-800 transition-colors">
+                    Customize
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Define application data
+        const appState = {
+            currentMode: "traveler",
+            selectedInterests: new Set(),
+            draggedItem: null,
+            destinations: [
+                { "id": 1, "name": "Paris, France", "type": "city", "country": "France" },
+                { "id": 2, "name": "Tokyo, Japan", "type": "city", "country": "Japan" },
+                { "id": 3, "name": "New York, USA", "type": "city", "country": "USA" },
+                { "id": 4, "name": "Bali, Indonesia", "type": "island", "country": "Indonesia" },
+                { "id": 5, "name": "Rome, Italy", "type": "city", "country": "Italy" },
+                { "id": 6, "name": "Sydney, Australia", "type": "city", "country": "Australia" }
+            ],
+            activities: [
+                { "id": 1, "day": 1, "title": "Eiffel Tower Visit", "time": "10:00 AM", "duration": "2 hours", "cost": "€25", "description": "Experience breathtaking views of Paris from the iconic Eiffel Tower." },
+                { "id": 2, "day": 2, "title": "Louvre Museum Tour", "time": "9:00 AM", "duration": "3 hours", "cost": "€17", "description": "Discover masterpieces including the Mona Lisa and Venus de Milo." }
+            ],
+            clients: [
+                { "id": 1, "name": "John Smith", "type": "Family of 4", "destination": "Bali, Indonesia", "status": "Drafting", "updated": "2 hours ago" },
+                { "id": 2, "name": "Sarah Johnson", "type": "Honeymoon", "destination": "Paris, France", "status": "Sent to Client", "updated": "1 day ago" },
+                { "id": 3, "name": "Michael Chen", "type": "Business Trip", "destination": "Tokyo, Japan", "status": "Booked", "updated": "3 days ago" },
+                { "id": 4, "name": "Emily Wilson", "type": "Solo Travel", "destination": "Rome, Italy", "status": "Planning", "updated": "1 week ago" }
+            ]
+        };
+
+        // Application State Management
+        function initializeApp() {
+            // Set default dates
+            const today = new Date();
+            const nextWeek = new Date(today);
+            nextWeek.setDate(today.getDate() + 7);
+            
+            document.getElementById("startDate").valueAsDate = today;
+            document.getElementById("endDate").valueAsDate = nextWeek;
+            
+            // Show cookie consent if not accepted
+            if (!localStorage.getItem("cookiesAccepted")) {
+                document.getElementById("cookieConsent").classList.remove("hidden");
+            }
+            
+            updateModeDisplay();
+        }
+
+        // Navigation handlers
+        function handleNavigation(page) {
+            console.log(`Navigating to ${page}`);
+            alert(`Navigating to ${page} page...`);
+        }
+
+        // Mode switching
+        function switchMode(mode) {
+            appState.currentMode = mode;
+            
+            // Hide all content sections
+            document.getElementById("travelerContent").classList.add("hidden");
+            document.getElementById("agencyContent").classList.add("hidden");
+            document.getElementById("bloggerContent").classList.add("hidden");
+            
+            // Show selected mode content
+            document.getElementById(`${mode}Content`).classList.remove("hidden");
+            
+            // Update mode indicator
+            const indicator = document.getElementById("modeIndicator");
+            let icon, text, color;
+            
+            switch(mode) {
+                case "traveler":
+                    icon = "fa-user";
+                    text = "Traveler Mode";
+                    color = "primary";
+                    break;
+                case "agency":
+                    icon = "fa-briefcase";
+                    text = "Agency Mode";
+                    color = "secondary";
+                    break;
+                case "blogger":
+                    icon = "fa-pen-nib";
+                    text = "Blogger Mode";
+                    color = "accent";
+                    break;
+            }
+            
+            indicator.innerHTML = `
+                <i class="fas ${icon} text-${color}-600"></i>
+                <span class="font-medium text-${color}-700">${text}</span>
+            `;
+            
+            // Update indicator styling
+            indicator.parentElement.className = `inline-flex items-center px-4 py-2 rounded-full bg-${color}-50 border border-${color}-200`;
+            
+            // Close mobile menu if open
+            document.getElementById("mobileMenu").classList.add("hidden");
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById("mobileMenu");
+            menu.classList.toggle("hidden");
+        }
+
+        // Interest tag toggle
+        function toggleInterest(interest) {
+            const button = event.target.closest("button");
+            if (appState.selectedInterests.has(interest)) {
+                appState.selectedInterests.delete(interest);
+                button.classList.remove("ring-2", "ring-offset-2");
+            } else {
+                appState.selectedInterests.add(interest);
+                button.classList.add("ring-2", "ring-offset-2");
+            }
+            console.log("Selected interests:", Array.from(appState.selectedInterests));
+        }
+
+        // Generate itinerary
+async function generateItinerary() {
+    const data = {
+        dest: document.getElementById("destinationInput").value,
+        interests: Array.from(appState.selectedInterests),
+        days: 7 // Calculate from dates
+    };
+
+    // 1. Tell Flask to start the AI
+    const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    });
+    const { task_id } = await response.json();
+
+    // 2. Poll the server every 2 seconds until the AI is done
+    const checkInterval = setInterval(async () => {
+    const res = await fetch(`/api/results/${task_id}`);
+    const result = await res.json();
+    
+    if (result.status === "completed") {
+        clearInterval(checkInterval);
+        renderItineraryToUI(result.data);
+    } else if (result.status === "failed") {
+        clearInterval(checkInterval);
+        alert("AI Generation failed: " + result.error);
+    }
+    }, 2000);
+}
+function renderItineraryToUI(data) {
+    const wrapper = document.getElementById("timelineWrapper");
+    wrapper.innerHTML = ""; // Clear the "Paris" placeholder
+
+    data.daily_plans.forEach(plan => {
+        const dayHtml = `
+            <div class="timeline-day">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center font-bold mr-3">
+                        ${plan.day}
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">Day ${plan.day}</h3>
+                </div>
+                ${plan.activities.map(act => `
+                    <div class="activity-card">
+                        <div class="font-semibold text-gray-800">${act.title}</div>
+                        <div class="text-sm text-primary-600 mb-1">${act.time}</div>
+                        <p class="text-sm text-gray-600">${act.description}</p>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        wrapper.insertAdjacentHTML('beforeend', dayHtml);
+    });
+}
+
+        // Drag and drop functionality
+        function dragStart(e) {
+            e.dataTransfer.setData("text/plain", e.target.dataset.id);
+            e.target.classList.add("opacity-50");
+            appState.draggedItem = e.target;
+        }
+
+        function dragEnd(e) {
+            e.target.classList.remove("opacity-50");
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            const id = e.dataTransfer.getData("text/plain");
+            const draggedElement = appState.draggedItem;
+            
+            if (draggedElement && draggedElement.parentNode !== e.target) {
+                e.target.appendChild(draggedElement);
+            }
+        }
+
+        // Add activity
+        function addActivity(day) {
+            const activity = {
+                id: Date.now(),
+                day: day,
+                title: "New Activity",
+                time: "12:00 PM",
+                duration: "1 hour",
+                cost: "€0",
+                description: "Add your activity description here..."
+            };
+            
+            appState.activities.push(activity);
+            
+            // In a real app, this would update the DOM
+            alert(`New activity added to Day ${day}`);
+        }
+
+        // Regenerate activity
+        function regenerateActivity(activityId) {
+            console.log(`Regenerating activity ${activityId}`);
+            
+            // Show loading on button
+            const button = event.target;
+            const originalIcon = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            // Simulate AI regeneration
+            setTimeout(() => {
+                button.innerHTML = originalIcon;
+                
+                // Show success notification
+                const notification = document.createElement("div");
+                notification.className = "fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg z-50";
+                notification.textContent = "Activity regenerated with AI suggestions!";
+                document.body.appendChild(notification);
+                
+                setTimeout(() => notification.remove(), 3000);
+            }, 1500);
+        }
+
+        // Save itinerary
+        function saveItinerary() {
+            alert("Itinerary saved and synced to your mobile app!");
+        }
+
+        // Toggle map view
+        function toggleMapView() {
+            alert("Opening map view with route visualization...");
+        }
+
+        // Agency functions
+        function showNewClientModal() {
+            alert("Opening new client modal...");
+        }
+
+        function importClientData() {
+            alert("Import client preferences from file...");
+        }
+
+        function toggleWhiteLabel() {
+            alert("Toggling white-label preview...");
+        }
+
+        function exportAsPDF() {
+            alert("Generating and downloading PDF document...");
+        }
+
+        function generateQuote() {
+            alert("Generating cost estimate quote...");
+        }
+
+        function generateShareableLink() {
+            const link = "https://travelguideai.app/client/abc123";
+            navigator.clipboard.writeText(link).then(() => {
+                alert("Shareable link copied to clipboard!");
+            });
+        }
+
+        // Blogger functions
+        function toggleSEOAnalytics() {
+            alert("Opening SEO optimization panel...");
+        }
+
+        function applyTone() {
+            const tone = document.getElementById("toneSelector").value;
+            alert(`Applying "${tone}" tone to content...`);
+        }
+
+        function generateImage() {
+            alert("Generating AI image with DALL-E...");
+        }
+
+        function insertMapWidget() {
+            alert("Inserting interactive map widget...");
+        }
+
+        function previewPost() {
+            alert("Opening preview in mobile/desktop views...");
+        }
+
+        function connectCMS() {
+            alert("Connecting to CMS platform...");
+        }
+
+        function publishToWeb() {
+            alert("Publishing post to web...");
+        }
+
+        // AI Prompt
+        function sendAIPrompt() {
+            const prompt = document.getElementById("aiPrompt").value;
+            if (!prompt.trim()) {
+                alert("Please enter a prompt for the AI!");
+                return;
+            }
+            
+            console.log("AI Prompt:", prompt);
+            alert(`Sending to AI: "${prompt}"\nThis would refine your itinerary in a real implementation.`);
+            document.getElementById("aiPrompt").value = "";
+        }
+
+        // Cookie functions
+        function acceptCookies() {
+            localStorage.setItem("cookiesAccepted", "true");
+            document.getElementById("cookieConsent").remove();
+        }
+
+        function declineCookies() {
+            alert("Opening cookie preferences...");
+        }
+
+        // Destination autocomplete
+        const destinationInput = document.getElementById("destinationInput");
+        const autocompleteResults = document.getElementById("autocompleteResults");
+        
+        if (destinationInput && autocompleteResults) {
+            destinationInput.addEventListener("input", function(e) {
+                const value = e.target.value.toLowerCase();
+                if (value.length > 2) {
+                    const matches = appState.destinations.filter(d => 
+                        d.name.toLowerCase().includes(value) || 
+                        d.country.toLowerCase().includes(value)
+                    );
+                    
+                    if (matches.length > 0) {
+                        autocompleteResults.innerHTML = matches.map(dest => `
+                            <div onclick="selectDestination('${dest.name}')" class="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0">
+                                <div class="font-medium">${dest.name}</div>
+                                <div class="text-sm text-gray-500">${dest.country} • ${dest.type}</div>
+                            </div>
+                        `).join("");
+                        autocompleteResults.classList.remove("hidden");
+                    } else {
+                        autocompleteResults.classList.add("hidden");
+                    }
+                } else {
+                    autocompleteResults.classList.add("hidden");
+                }
+            });
+            
+            // Hide results when clicking outside
+            document.addEventListener("click", function(e) {
+                if (!destinationInput.contains(e.target) && !autocompleteResults.contains(e.target)) {
+                    autocompleteResults.classList.add("hidden");
+                }
+            });
+        }
+
+        function selectDestination(name) {
+            destinationInput.value = name;
+            autocompleteResults.classList.add("hidden");
+        }
+
+        // Initialize app
+        document.addEventListener("DOMContentLoaded", initializeApp);
+
+        // Add CSS for components
+        const style = document.createElement("style");
+        style.textContent = `
+            .nav-item {
+                @apply px-3 py-2 rounded-lg transition-colors duration-200;
+            }
+            .interest-tag {
+                @apply px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer flex items-center;
+            }
+            .magic-generate-btn {
+                @apply relative overflow-hidden;
+            }
+            .magic-generate-btn::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+                transform: rotate(45deg);
+                animation: shine 3s infinite;
+            }
+            @keyframes shine {
+                0% { transform: translateX(-100%) rotate(45deg); }
+                100% { transform: translateX(100%) rotate(45deg); }
+            }
+            .activity-card {
+                @apply bg-white border border-gray-200 rounded-xl p-4 mb-3 shadow-sm hover:shadow-md transition-shadow duration-200;
+            }
+            .timeline-day {
+                @apply relative pl-8 border-l-2 border-primary-200 ml-4;
+            }
+            .timeline-day::before {
+                content: "";
+                position: absolute;
+                left: -8px;
+                top: 16px;
+                width: 16px;
+                height: 16px;
+                background: white;
+                border: 3px solid #0ea5e9;
+                border-radius: 50%;
+            }
+            .status-badge {
+                @apply px-3 py-1 rounded-full text-xs font-medium inline-flex items-center;
+            }
+            .drag-handle {
+                @apply cursor-move opacity-50 hover:opacity-100 transition-opacity;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
